@@ -58,6 +58,17 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+// Keep server alive (prevent Render.com sleep)
+const keepAlive = () => {
+  const interval = 14 * 60 * 1000; // 14 minutes
+  setInterval(() => {
+    const url = process.env.KEEP_ALIVE_URL || `http://localhost:${PORT}`;
+    fetch(url).catch(console.error);
+  }, interval);
+  console.log('⏰ Keep-alive cron job started');
+};
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  keepAlive();
 });
