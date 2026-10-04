@@ -29,15 +29,19 @@ exports.getSettings = async (req, res) => {
 // @route   PUT /api/settings
 exports.updateSettings = async (req, res) => {
   try {
+    // resumeUrl is managed exclusively by upload-resume endpoint (stores JSON blob);
+    // never let a plain PUT overwrite it with a filename
+    const { resumeUrl, ...payload } = req.body;
+
     let settings = await Settings.findOne();
     
     if (!settings) {
       // Create new settings if none exist
-      settings = await Settings.create(req.body);
+      settings = await Settings.create(payload);
     } else {
       // Update existing settings
-      Object.keys(req.body).forEach(key => {
-        settings[key] = req.body[key];
+      Object.keys(payload).forEach(key => {
+        settings[key] = payload[key];
       });
       await settings.save();
     }
@@ -158,8 +162,23 @@ exports.getResume = async (req, res) => {
       });
     }
 
-    const resumeData = JSON.parse(settings.resumeUrl);
-    
+    let resumeData;
+    try {
+      resumeData = JSON.parse(settings.resumeUrl);
+    } catch (parseError) {
+      return res.status(404).json({
+        success: false,
+        message: 'Resume data invalid or corrupted — please re-upload resume'
+      });
+    }
+
+    if (!resumeData?.data || !resumeData?.contentType) {
+      return res.status(404).json({
+        success: false,
+        message: 'Resume data invalid or corrupted — please re-upload resume'
+      });
+    }
+
     res.setHeader('Content-Type', resumeData.contentType);
     res.setHeader('Content-Disposition', `attachment; filename="${resumeData.fileName}"`);
     res.send(Buffer.from(resumeData.data, 'base64'));
