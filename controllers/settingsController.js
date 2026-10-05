@@ -1,5 +1,6 @@
 // backend/controllers/settingsController.js
 const Settings = require('../models/Settings');
+const triggerRevalidate = require('../utils/nextRevalidate');
 
 // @desc    Get settings
 // @route   GET /api/settings
@@ -46,6 +47,7 @@ exports.updateSettings = async (req, res) => {
       await settings.save();
     }
 
+    triggerRevalidate(['/']);
     res.status(200).json({
       success: true,
       message: 'Settings updated successfully',
@@ -136,6 +138,7 @@ exports.uploadResume = async (req, res) => {
       await Settings.create({ resumeUrl: JSON.stringify(resumeData), resumeFileName: fileName });
     }
 
+    triggerRevalidate(['/']);
     res.status(200).json({
       success: true,
       message: 'Resume uploaded successfully'

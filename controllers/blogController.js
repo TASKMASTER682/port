@@ -1,5 +1,6 @@
 // backend/controllers/blogController.js
 const Blog = require('../models/Blog');
+const triggerRevalidate = require('../utils/nextRevalidate');
 
 // Get all published blogs
 exports.getAllBlogs = async (req, res) => {
@@ -66,6 +67,7 @@ exports.createBlog = async (req, res) => {
     });
     
     await blog.save();
+    triggerRevalidate(['/', '/blog', '/blog/[slug]']);
     res.status(201).json({ success: true, data: blog });
   } catch (error) {
     console.error('Create blog error:', error);
@@ -107,6 +109,7 @@ exports.updateBlog = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }
     
+    triggerRevalidate(['/', '/blog', '/blog/[slug]']);
     res.json({ success: true, data: blog });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -123,6 +126,7 @@ exports.deleteBlog = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }
     
+    triggerRevalidate(['/', '/blog', '/blog/[slug]']);
     res.json({ success: true, message: 'Blog deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -1,5 +1,6 @@
 // backend/controllers/skillController.js
 const Skill = require('../models/Skill');
+const triggerRevalidate = require('../utils/nextRevalidate');
 
 // Get all skills
 exports.getAllSkills = async (req, res) => {
@@ -23,6 +24,7 @@ exports.createSkill = async (req, res) => {
     });
     
     await skill.save();
+    triggerRevalidate(['/']);
     res.status(201).json({ success: true, data: skill });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -45,6 +47,7 @@ exports.updateSkill = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Skill not found' });
     }
     
+    triggerRevalidate(['/']);
     res.json({ success: true, data: skill });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -61,6 +64,7 @@ exports.deleteSkill = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Skill not found' });
     }
     
+    triggerRevalidate(['/']);
     res.json({ success: true, message: 'Skill deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

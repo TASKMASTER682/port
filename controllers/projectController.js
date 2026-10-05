@@ -1,5 +1,6 @@
 // backend/controllers/projectController.js
 const Project = require('../models/Project');
+const triggerRevalidate = require('../utils/nextRevalidate');
 
 // Get all projects
 exports.getAllProjects = async (req, res) => {
@@ -28,6 +29,7 @@ exports.createProject = async (req, res) => {
     });
     
     await project.save();
+    triggerRevalidate(['/']);
     res.status(201).json({ success: true, data: project });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -52,6 +54,7 @@ exports.updateProject = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
     
+    triggerRevalidate(['/']);
     res.json({ success: true, data: project });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -68,6 +71,7 @@ exports.deleteProject = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
     
+    triggerRevalidate(['/']);
     res.json({ success: true, message: 'Project deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
