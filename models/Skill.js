@@ -12,6 +12,15 @@ const skillSchema = new mongoose.Schema({
     min: 0,
     max: 100
   },
+  category: {
+    type: String,
+    enum: ['Frontend', 'Backend', 'Database', 'Tools', 'Design', 'Other'],
+    default: 'Other'
+  },
+  familiar: {
+    type: Boolean,
+    default: false
+  },
   color: {
     type: String,
     default: "#00f5ff"

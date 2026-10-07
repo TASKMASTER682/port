@@ -77,7 +77,13 @@ const settingsSchema = new mongoose.Schema({
     instagram: { type: String, default: '' },
     youtube: { type: String, default: '' },
     email: { type: String, default: '' }
-  }
+  },
+
+  // Proof strip stats shown under the hero (max 4)
+  proofStats: [{
+    value: { type: String, default: '' },
+    label: { type: String, default: '' }
+  }]
 }, {
   timestamps: true
 });

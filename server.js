@@ -28,6 +28,7 @@ const settingsRoutes = require('./routes/settingsRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const testimonialRoutes = require('./routes/testimonialRoutes');
 
 console.log('Loading auth routes...');
 const authRoutes = require('./routes/authRoutes');
@@ -41,6 +42,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/auth', authRoutes);
 
 // Health Check

@@ -21,6 +21,40 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // Case-study fields
+  type: {
+    type: String,
+    enum: ['own', 'client'],
+    default: 'own'
+  },
+  clientType: {
+    type: String,
+    default: ''
+  },
+  problem: {
+    type: String,
+    default: ''
+  },
+  role: {
+    type: String,
+    default: ''
+  },
+  timeline: {
+    type: String,
+    default: ''
+  },
+  result: {
+    type: String,
+    default: ''
+  },
+  hardProblem: {
+    type: String,
+    default: ''
+  },
+  featured: {
+    type: Boolean,
+    default: false
+  },
   displayOrder: {
     type: Number,
     default: 0

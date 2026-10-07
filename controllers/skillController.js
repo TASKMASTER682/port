@@ -15,12 +15,14 @@ exports.getAllSkills = async (req, res) => {
 // Create skill
 exports.createSkill = async (req, res) => {
   try {
-    const { name, percentage, color } = req.body;
+    const { name, percentage, color, category, familiar } = req.body;
     
     const skill = new Skill({
       name,
       percentage,
-      color: color || "#00f5ff"
+      color: color || "#00f5ff",
+      category,
+      familiar
     });
     
     await skill.save();
@@ -35,11 +37,11 @@ exports.createSkill = async (req, res) => {
 exports.updateSkill = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, percentage, color, displayOrder } = req.body;
+    const { name, percentage, color, displayOrder, category, familiar } = req.body;
     
     const skill = await Skill.findByIdAndUpdate(
       id,
-      { name, percentage, color, displayOrder },
+      { name, percentage, color, displayOrder, category, familiar },
       { new: true, runValidators: true }
     );
     

@@ -15,7 +15,7 @@ exports.getAllProjects = async (req, res) => {
 // Create project
 exports.createProject = async (req, res) => {
   try {
-    const { icon, title, description, tags, liveLink } = req.body;
+    const { icon, title, description, tags, liveLink, type, clientType, problem, role, timeline, result, hardProblem, featured } = req.body;
     
     // Parse tags from comma-separated string
     const tagsArray = tags ? tags.split(',').map(t => t.trim()).filter(t => t) : [];
@@ -25,11 +25,19 @@ exports.createProject = async (req, res) => {
       title,
       description,
       tags: tagsArray,
-      liveLink
+      liveLink,
+      type,
+      clientType,
+      problem,
+      role,
+      timeline,
+      result,
+      hardProblem,
+      featured
     });
     
     await project.save();
-    triggerRevalidate(['/']);
+    triggerRevalidate(['/', '/work/[id]']);
     res.status(201).json({ success: true, data: project });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -40,13 +48,13 @@ exports.createProject = async (req, res) => {
 exports.updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { icon, title, description, tags, liveLink, displayOrder, isActive } = req.body;
+    const { icon, title, description, tags, liveLink, displayOrder, isActive, type, clientType, problem, role, timeline, result, hardProblem, featured } = req.body;
     
     const tagsArray = tags ? tags.split(',').map(t => t.trim()).filter(t => t) : [];
     
     const project = await Project.findByIdAndUpdate(
       id,
-      { icon, title, description, tags: tagsArray, liveLink, displayOrder, isActive },
+      { icon, title, description, tags: tagsArray, liveLink, displayOrder, isActive, type, clientType, problem, role, timeline, result, hardProblem, featured },
       { new: true, runValidators: true }
     );
     
@@ -54,7 +62,7 @@ exports.updateProject = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
     
-    triggerRevalidate(['/']);
+    triggerRevalidate(['/', '/work/[id]', `/work/${id}`]);
     res.json({ success: true, data: project });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -71,7 +79,7 @@ exports.deleteProject = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
     
-    triggerRevalidate(['/']);
+    triggerRevalidate(['/', '/work/[id]', `/work/${id}`]);
     res.json({ success: true, message: 'Project deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
